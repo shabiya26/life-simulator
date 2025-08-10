@@ -1,0 +1,29 @@
+const express = require('express');
+const path = require('path');
+const fs = require('fs');
+const cors = require('cors');
+
+const app = express();
+const PORT = 3000;
+
+app.use(cors());
+app.use(express.json());
+app.use(express.static(path.join(__dirname, '../frontend')));
+
+// Load scenarios
+const scenarios = JSON.parse(fs.readFileSync(path.join(__dirname, 'data/scenarios.json'), 'utf8'));
+
+// API to get starting scenario
+app.get('/api/start', (req, res) => {
+    res.json(scenarios[0]); // First scenario
+});
+
+// API to get scenario by id
+app.get('/api/scenario/:id', (req, res) => {
+    const scenario = scenarios.find(s => s.id === parseInt(req.params.id));
+    res.json(scenario || { end: true, message: "No more scenarios." });
+});
+
+app.listen(PORT, () => {
+    console.log(`Life Swap Simulator running on http://localhost:${PORT}`);
+});

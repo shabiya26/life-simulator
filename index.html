@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Life Swap Simulator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #f4f4f4;
+        }
+        header, footer {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 15px;
+        }
+        main {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+        }
+        .hidden {
+            display: none;
+        }
+        button {
+            background: #007BFF;
+            color: white;
+            padding: 10px;
+            margin-top: 10px;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        #choices button {
+            display: block;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Life Swap Simulator</h1>
+    </header>
+
+    <main>
+        <!-- Character creation section -->
+        <section id="character-creation">
+            <h2>Create Your New Life</h2>
+            <form id="charForm">
+                <label>Name: <input type="text" id="name" required></label><br><br>
+                <label>Occupation: <input type="text" id="occupation"></label><br><br>
+                <label>Personality: <input type="text" id="personality"></label><br><br>
+                <button type="submit">Start Simulation</button>
+            </form>
+        </section>
+
+        <!-- Simulation section -->
+        <section id="simulation" class="hidden">
+            <p id="scenario-text"></p>
+            <div id="choices"></div>
+        </section>
+
+        <!-- Summary section -->
+        <section id="summary" class="hidden">
+            <h2>Life Summary</h2>
+            <pre id="summary-text"></pre>
+            <button onclick="location.reload()">Play Again</button>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Life Swap Simulator</p>
+    </footer>
+
+    <script>
+        // Predefined scenarios (embedded instead of JSON file)
+        const scenarios = [
+            {
+                "id": 1,
+                "text": "You wake up in a new body, a successful architect living in New York. What will you do first?",
+                "choices": [
+                    { "text": "Go to work early", "nextId": 2 },
+                    { "text": "Sleep in and skip work", "nextId": 3 }
+                ]
+            },
+            {
+                "id": 2,
+                "text": "At work, your boss offers you a big project. Accept?",
+                "choices": [
+                    { "text": "Yes", "nextId": 4 },
+                    { "text": "No", "nextId": 5 }
+                ]
+            },
+            {
+                "id": 3,
+                "text": "Your boss calls you angrily. You might lose your job.",
+                "choices": [
+                    { "text": "Apologize and promise to improve", "nextId": 2 },
+                    { "text": "Ignore the call", "nextId": 6 }
+                ]
+            },
+            {
+                "id": 4,
+                "text": "You succeed in the project and gain fame.",
+                "choices": []
+            },
+            {
+                "id": 5,
+                "text": "You maintain a balanced life without extra stress.",
+                "choices": []
+            },
+            {
+                "id": 6,
+                "text": "You lose your job and have to find a new career.",
+                "choices": []
+            }
+        ];
+
+        let character = {};
+        let historyLog = [];
+
+        document.getElementById('charForm').addEventListener('submit', e => {
+            e.preventDefault();
+            character.name = document.getElementById('name').value;
+            character.occupation = document.getElementById('occupation').value;
+            character.personality = document.getElementById('personality').value;
+
+            document.getElementById('character-creation').classList.add('hidden');
+            document.getElementById('simulation').classList.remove('hidden');
+
+            loadScenario(1); // start with scenario ID 1
+        });
+
+        function loadScenario(id) {
+            const scenario = scenarios.find(s => s.id === id);
+            if (!scenario || !scenario.choices.length) {
+                endSimulation(scenario ? scenario.text : "Your journey has ended.");
+                return;
+            }
+            showScenario(scenario);
+        }
+
+        function showScenario(scenario) {
+            document.getElementById('scenario-text').innerText = scenario.text;
+            const choicesDiv = document.getElementById('choices');
+            choicesDiv.innerHTML = '';
+
+            scenario.choices.forEach(choice => {
+                let btn = document.createElement('button');
+                btn.innerText = choice.text;
+                btn.onclick = () => {
+                    historyLog.push({ event: scenario.text, choice: choice.text });
+                    loadScenario(choice.nextId);
+                };
+                choicesDiv.appendChild(btn);
+            });
+        }
+
+        function endSimulation(finalText) {
+            document.getElementById('simulation').classList.add('hidden');
+            document.getElementById('summary').classList.remove('hidden');
+
+            let summary = `Character: ${character.name}, ${character.occupation}, Personality: ${character.personality}\n\nLife Choices:\n`;
+            historyLog.forEach((log, i) => {
+                summary += `${i + 1}. ${log.event} → You chose: ${log.choice}\n`;
+            });
+            summary += `\nFinal Outcome: ${finalText}`;
+            document.getElementById('summary-text').innerText = summary;
+        }
+    </script>
+</body>
+</html>

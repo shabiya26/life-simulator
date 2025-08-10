@@ -1,0 +1,41 @@
+[
+    {
+        "id": 1,
+        "text": "You wake up in a new body, a successful architect living in New York. What will you do first?",
+        "choices": [
+            { "text": "Go to work early", "nextId": 2 },
+            { "text": "Sleep in and skip work", "nextId": 3 }
+        ]
+    },
+    {
+        "id": 2,
+        "text": "At work, your boss offers you a big project. Accept?",
+        "choices": [
+            { "text": "Yes", "nextId": 4 },
+            { "text": "No", "nextId": 5 }
+        ]
+    },
+    {
+        "id": 3,
+        "text": "Your boss calls you angrily. You might lose your job.",
+        "choices": [
+            { "text": "Apologize and promise to improve", "nextId": 2 },
+            { "text": "Ignore the call", "nextId": 6 }
+        ]
+    },
+    {
+        "id": 4,
+        "text": "You succeed in the project and gain fame.",
+        "choices": []
+    },
+    {
+        "id": 5,
+        "text": "You maintain a balanced life without extra stress.",
+        "choices": []
+    },
+    {
+        "id": 6,
+        "text": "You lose your job and have to find a new career.",
+        "choices": []
+    }
+]
